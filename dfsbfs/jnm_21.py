@@ -87,7 +87,16 @@ def bfs(x,y):
 
     if is_possible_visit[x][y] ==0:
         search_que.append([x,y,0])
-        is_possible_visit[x][y]=1
+        is_possible_visit[x][y]=1 
+        """
+        is_possible_visit[x][y]=1  방문하지 않아서 
+        아래와 같은 TC 통과하지 못함
+        4 3
+        WWW
+        WLW
+        WLW
+        WWW
+        """
 
     while(search_que):
 
@@ -101,6 +110,11 @@ def bfs(x,y):
             #     print(f"{nx},{ny}")
 
 
+            """
+            if nx<0 or ny <0 or nx >R-1 or ny >C-1:
+            을 아래처럼 초반에 nx<=0   등호가 포함됐는데, 찾지 못해서 40분 허비..
+            if nx<=0 or ny <0 or nx >R-1 or ny >C-1:
+            """
             if nx<0 or ny <0 or nx >R-1 or ny >C-1:
                 continue
 
