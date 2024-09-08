@@ -15,11 +15,26 @@ LLLWLLL
 WLLWLWW
 
 1. 꼭지점 먼저 구하기
+*******************************
+->  반례 존재...
+3 7
+LLLWLLL
+LWLLLWL
+LLLWLLL
+
+
 
 2. 꼭지점들 중 하나를 임의로 선정 해서, 간선(거리)를 가진 그래프로 변환
 
 3. 완전탐색..?
 더 좋은 방법?????
+
+
+************맵의 크기가 50 * 50 이라, 모든 좌표(X) -> 모든 땅에서 탐색하면 된다?
+
+입력 파일의 첫째 줄에는 보물 지도의 세로의 크기와 가로의 크기가 빈칸을 사이에 두고 주어진다.
+이어 L과 W로 표시된 보물 지도가 아래의 예와 같이 주어지며, 각 문자 사이에는 빈 칸이 없다.
+보물 지도의 가로, 세로의 크기는 각각 50이하이다.
 
 
 todo::
@@ -50,7 +65,7 @@ que = deque()
 visited =[[0 for _ in range(0, C)] for _ in range(0, R) ]
 # 꼭지점 리스트
 # dot_list =[]
-dot_list = defaultdict(list)
+dot_defaultdict = defaultdict(list)
 
 #map을 읽으면서, visited(방문 가능한 땅인지) 기록
 for r in range(0, R):
@@ -62,9 +77,8 @@ for r in range(0, R):
         else:
             visited[r][c]=1
 
-show_maps(maps)
-# print(que)
-show_maps(visited)
+# show_maps(maps)
+# show_maps(visited)
 
 dx =[-1,0,1,0]
 dy =[0,-1,0,1]
@@ -72,26 +86,65 @@ dy =[0,-1,0,1]
 from_xy=[]
 to_xy=[]
 
-def bfs(maps,x,y):
-    
-    visited[x][y]==1
-    global from_xy
-    from_xy = [x,y]
-    print(from_xy)
-    for i in range(0,4):
-        # print(i)
-        nx=x+dx[i]
-        ny=y+dy[i]
-        # print(f"x, y visited : {nx},{ny} / {x},{y}")
+def bfs(x,y):
+    max = -1
+    search_que = deque()
 
-        if nx <0 or ny <0 or nx>R-1 or ny>C-1:
-            continue
-        
-        # W (땅이 아니라면) pass
-        if visited[nx][ny] ==1:
-            continue
-        visited[nx][ny]=1
-        bfs(maps,nx,ny)
+    is_possible_visit = copy.deepcopy(visited)
+
+    if is_possible_visit[x][y] ==0:
+        search_que.append([x,y,0])
+        is_possible_visit[x][y]=1 
+        """
+        is_possible_visit[x][y]=1  방문하지 않아서 
+        아래와 같은 TC 통과하지 못함
+        4 3
+        WWW
+        WLW
+        WLW
+        WWW
+        """
+
+    while(search_que):
+
+        sx,sy,dist = search_que.popleft()
+
+        for i in range(0,4):
+            nx = sx + dx[i]
+            ny = sy + dy[i]
+
+            # if x==2 and y ==2 and sx==1 and sy==1:
+            #     print(f"{nx},{ny}")
+
+
+            """
+            if nx<0 or ny <0 or nx >R-1 or ny >C-1:
+            을 아래처럼 초반에 nx<=0   등호가 포함됐는데, 찾지 못해서 40분 허비..
+            if nx<=0 or ny <0 or nx >R-1 or ny >C-1:
+            """
+            if nx<0 or ny <0 or nx >R-1 or ny >C-1:
+                continue
+
+            # if x==2 and y ==2:
+            #     print(f"{sx},{sy} / {nx},{ny} / {is_possible_visit[nx][ny]}")
+            
+            if is_possible_visit[nx][ny] ==0:
+                is_possible_visit[nx][ny]=1
+                search_que.append([nx,ny,dist+1])
+
+                
+                if dist+1>max:
+                    max=dist+1
+                if x==2 and y ==2:
+                    pass
+                    # show_maps(is_possible_visit)
+                    # print(f"{sx},{sy} / {nx},{ny} / {max}")
+                    # print(search_que)
+
+    # print(f"{x} / {y} / {max}")
+    return max 
+
+
 
 #꼭지점 구하기
 dot_que = copy.deepcopy(que)
@@ -128,11 +181,11 @@ while dot_que:
                 cnt +=1 
 
         if cnt == 2:
-            # dot_list.append([x,y])
-            dot_list[(x,y)]=1
+            # dot_defaultdict.append([x,y])
+            dot_defaultdict[(x,y)]=1
 
 
-print(dot_list)
+# print(dot_defaultdict)
 
 # 
 """
@@ -141,8 +194,29 @@ print(dot_list)
 모든 꼭지점
 
 dp 150*150 정도가 메모리 사용
-"""
 
+=>> 
+허무하다는 것에서 hint..
+꼭지점 모두 n*n bfs  ?
+
+"""
+dot_list=[]
+for k,v in dot_defaultdict.items():
+    dot_list.append(k)
+# print(dot_list)    
+
+answer = -1
+# for i in range(0,len(dot_list)):
+#     x,y = dot_list[i]
+#     answer = max(answer,bfs(x,y))
+    
+
+for i in range(R):
+    for j in range(C):
+        answer = max(answer, bfs(i,j))    
+# bfs(answer,4,1)    
+
+print(answer)
 
 # while que:
 #     x , y = que.popleft()

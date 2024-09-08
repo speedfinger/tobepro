@@ -50,4 +50,3 @@ def bfs(x,y,pr,pc):
 
 bfs(kr-1,kc-1,pr-1,pc-1)
 print(maps[pr-1][pc-1])
-
