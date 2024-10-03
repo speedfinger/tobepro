@@ -8,6 +8,16 @@ dict["N-1""N-1"] = A
 본인이 소유한거면, None 처리
 다른사람이 소유한거면 cnt 비교
 최종 cnt 출력
+
+remember@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+remember1) key를 만들때
+map_key=f"{x}{y}"로 처리했는데 이런 경우 x,y 조합에 따라 다른 좌표가 같은 key가 되버리는 경우가 발생할 수 있음
+map_key=f"{x},{y}" 로 변경후 solve
+
+remember2)
+dict = {}
+dict.pop('key') 가 가능함.
+
 """
 
 import sys 
@@ -26,20 +36,21 @@ for idx in range(0,play_count):
     # print(player)
 
     x, y= list(map(str,input().split()))
-    map_key=f"{x}{y}"
+    map_key=f"{x},{y}"
     # print(map_key)
 
+    #한번도 방문하지 않은 key
     if map_key not in map_db:
         map_db[map_key]=current_player
         player_score[current_player]=player_score[current_player]+1
-    elif map_db[map_key]==99 :
-        map_db[map_key]=current_player
-        player_score[current_player]=player_score[current_player]+1        
+        
+    #그외: key가 점유된 상황일 경우
     else:
         before_palyer = map_db[map_key]
 
+        #본인 key인 경우
         if before_palyer==current_player:
-            map_db[map_key]=99
+            map_db.pop(map_key)
             player_score[current_player]=player_score[current_player]-1
             # print(map_db)
             # print(player_score)
